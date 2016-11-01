@@ -43,7 +43,6 @@ else
 end
 % End initialization code - DO NOT EDIT
 
-
 % --- Executes just before JamieFrankMosaicMaster is made visible.
 function JamieFrankMosaicMaster_OpeningFcn(hObject, eventdata, handles, varargin)
 % This function has no output args, see OutputFcn.
@@ -53,6 +52,7 @@ function JamieFrankMosaicMaster_OpeningFcn(hObject, eventdata, handles, varargin
 % varargin   command line arguments to JamieFrankMosaicMaster (see VARARGIN)
 % Read in a reza's color logo image.
 % Prepare the full file name.
+
 folder = pwd;
 filename = '/logo.png';
 
@@ -112,8 +112,10 @@ function start_button_Callback(hObject, eventdata, handles)
  if isempty(x)
    fprintf('Error: Enter Text first\n');
  else
-M = TileGenerator.read_image(str2num(x), filename);
-imshow(M)
+filename = handles.filename;
+
+M = read_file( str2num(x), filename);
+figure,imshow(M)
  end
 % hObject    handle to start_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
@@ -122,7 +124,16 @@ imshow(M)
 
 % --- Executes on button press in target_button.
 function target_button_Callback(hObject, eventdata, handles)
-filename = uigetfile()
+startingFolder = '.';
+defaultFileName = fullfile(startingFolder, '*.*');
+[baseFileName, folder] = uigetfile(defaultFileName, 'Select Image');
+if baseFileName == 0
+	% User clicked the Cancel button.
+	return;
+end
+filename = fullfile(folder, baseFileName);
+handles.filename = filename;
+guidata(hObject,handles)
 % hObject    handle to target_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
