@@ -108,6 +108,13 @@ end
 
 % --- Executes on button press in start_button.
 function start_button_Callback(hObject, eventdata, handles)
+ x = get(handles.edit_text,'String'); %edit1 being Tag of ur edit box
+ if isempty(x)
+   fprintf('Error: Enter Text first\n');
+ else
+M = TileGenerator.read_image(str2num(x), filename);
+imshow(M)
+ end
 % hObject    handle to start_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
@@ -115,7 +122,7 @@ function start_button_Callback(hObject, eventdata, handles)
 
 % --- Executes on button press in target_button.
 function target_button_Callback(hObject, eventdata, handles)
-filename = uigetfile
+filename = uigetfile()
 % hObject    handle to target_button (see GCBO)
 % eventdata  reserved - to be defined in a future version of MATLAB
 % handles    structure with handles and user data (see GUIDATA)
