@@ -16,8 +16,10 @@ class Compare:
     def __init__(self, target_img_path, out_img_dim, num_of_tiles):
         self.target_img_name = target_img_path[target_img_path.rfind("/") + 1:]
         self.out_img_dim = out_img_dim
-        self.orginal_img = cv2.imread(target_img_path).resize(out_img_dim[0], out_img_dim[1])
-        self.tile_size = self.get_tile_size(num_of_tiles)
+        self.orginal_img = cv2.imread(target_img_path)
+        self.orginal_img = cv2.resize(self.orginal_img, (out_img_dim[0], out_img_dim[1]))
+        self.tile_size = int(floor(sqrt(num_of_tiles)))
+        print self.tile_size
         self.read_src_images()
         # self.org_img_hist = self.compute_histograms(self.target_img_name, self.orginal_img)
 
@@ -31,23 +33,12 @@ class Compare:
         hist = hist.flatten()
         return hist
 
-    def read_srs_images(self):
+    def read_src_images(self):
         for imagePath in glob.glob(os.getcwd() +
                                    "/Images/out_natural_1k/*.jpg"):
             filename = imagePath[imagePath.rfind("/") + 1:]
             image = cv2.imread(imagePath)
             Compare.index[filename] = self.compute_histograms(filename, image)
-
-    def calc_columns_rows(n):
-        num_columns = int(ceil(sqrt(n)))
-        num_rows = int(ceil(n / float(num_columns)))
-        return (num_columns, num_rows)
-
-    def get_tile_size(self, tiles):
-        w, h = self.orginal_img.size
-        columns, rows = self.calc_columns_rows(tiles)
-        tile_w, tile_h = int(floor(w / columns)), int(floor(h / rows))
-        return tile_w, tile_h
 
     def compare_histograms(self, method):
         results = {}
