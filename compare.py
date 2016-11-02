@@ -11,13 +11,14 @@ class Compare:
                       "Intersection": cv2.HISTCMP_INTERSECT,
                       "Hellinger": cv2.HISTCMP_HELLINGER}
 
-    def __init__(self, img_path, img_dim, num_of_tiles):
+    def __init__(self, img_path, img_dim, num_of_tiles, src_dir):
         self.img_name = img_path[img_path.rfind("/") + 1:]
         self.img_dim = img_dim
         self.org_img = cv2.imread(img_path)
         self.org_img = cv2.resize(self.org_img, (img_dim[0], img_dim[1]))
-        self.tile_size = 5 #int(floor(sqrt(num_of_tiles)))
-        #self.validate_img_size(self.img_dim, self.tile_size, num_of_tiles)
+        self.source_dir = src_dir
+        self.tile_size = 5  # int(floor(sqrt(num_of_tiles)))
+        # self.validate_img_size(self.img_dim, self.tile_size, num_of_tiles)
         self.read_src_images()
         print self.org_img.shape
 
@@ -38,7 +39,7 @@ class Compare:
         return hist
 
     def read_src_images(self):
-        for imagePath in glob.glob(os.getcwd() + "/Images/training_mix/*.jpg"):
+        for imagePath in glob.glob(self.source_dir + "/*.jpg"):
             filename = imagePath[imagePath.rfind("/") + 1:]
             image = cv2.imread(imagePath)
             image = cv2.resize(image, (50, 50))
