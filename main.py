@@ -1,8 +1,6 @@
 from Tkinter import *
 from compare import Compare
 from tkFileDialog import askopenfilename
-import numpy as np
-import image_slicer
 
 root = Tk()
 root.minsize(width=400, height=400)
@@ -11,13 +9,8 @@ image_path = None
 # Define widget callbacks
 def start_btn_cb(val):
     tiles = int(val.get())
-    # Slice image int n number of tiles
-    #tiles = image_slicer.slice(image_path, tiles)
-    # Print first tile as matrix
-    # print (np.asarray(tiles[0].image.convert('L')))
-    # Show first tile as image
-    x = Compare(image_path, (100, 100), 10)
-    #print x.compare_histograms('Correlation')
+    x = Compare(image_path, (800, 600), 8000)
+    x.create_mosaic()
 
 
 def open_img_btn_cb():
