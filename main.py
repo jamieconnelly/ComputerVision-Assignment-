@@ -12,14 +12,12 @@ image_path = None
 def start_btn_cb(val):
     tiles = int(val.get())
     # Slice image int n number of tiles
-    tiles = image_slicer.slice(image_path, tiles)
+    #tiles = image_slicer.slice(image_path, tiles)
     # Print first tile as matrix
     # print (np.asarray(tiles[0].image.convert('L')))
     # Show first tile as image
-    tiles[0].image.show()
-    print tiles[0].filename
-    x = Compare(tiles[0].filename)
-    print x.compare_histograms('Correlation')
+    x = Compare(image_path, (100, 100), 10)
+    #print x.compare_histograms('Correlation')
 
 
 def open_img_btn_cb():
