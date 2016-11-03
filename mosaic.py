@@ -17,7 +17,7 @@ class Mosaic:
         self.source_dir = src_dir
         self.tile_size = tile_size
         self.dis_metric = dis_metric
-        self.out_name = out_name
+        self.out_name = os.getcwd() +"/" + out_name + ".jpg"
         self.read_src_images()
         print 'output image dimensions are: ' + str(self.org_img.shape)
 
@@ -85,4 +85,4 @@ class Mosaic:
 
         cv2.waitKey(0)
         cv2.destroyAllWindows()
-        cv2.imwrite(os.getcwd() + self.out_name, self.org_img)
+        cv2.imwrite(self.out_name, self.org_img)

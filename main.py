@@ -1,4 +1,5 @@
 import Tkinter as tk
+import time
 from mosaic import Mosaic
 from tkFileDialog import askopenfilename, askdirectory
 
@@ -14,17 +15,19 @@ class MainApplication(tk.Frame):
         self.tile_size.set("5")
         self.hist_var = tk.StringVar(parent)
         self.hist_var.set("Correlation")
+        self.img_w = tk.IntVar()
+        self.img_h = tk.IntVar()
+        self.img_w.set(800)
+        self.img_h.set(600)
 
         # Declare labels and inputs
-        self.filename_lbl = tk.Label(parent, text="Choose Output name")
-        self.filename_text = tk.Entry(parent)
         self.size_picker_lbl = tk.Label(parent, text="Pick Tile Size")
         self.size_picker = tk.OptionMenu(parent, self.tile_size,
                                          "5", "10", "20", "30")
         self.img_w_lbl = tk.Label(parent, text="Image Width")
-        self.img_w_val = tk.Entry(parent, bd=1)
+        self.img_w_val = tk.Entry(parent, bd=1, text=self.img_w)
         self.img_h_lbl = tk.Label(parent, text="Image Height")
-        self.img_h_val = tk.Entry(parent, bd=1)
+        self.img_h_val = tk.Entry(parent, bd=1, text=self.img_h)
         self.hist_comp_lbl = tk.Label(parent, text="Pick Histogram Comparison")
         self.hist_comp = tk.OptionMenu(parent, self.hist_var,
                                        "Correlation", "Chi-Squared",
@@ -49,20 +52,23 @@ class MainApplication(tk.Frame):
         self.img_w_val.pack()
         self.img_h_lbl.pack()
         self.img_h_val.pack()
-        self.filename_lbl.pack()
-        self.filename_text.pack()
         self.hist_comp_lbl.pack()
         self.hist_comp.pack()
         self.size_picker_lbl.pack()
         self.size_picker.pack()
 
     def start_btn_cb(self):
-        img_h = int(self.img_h_val.get())
-        img_w = int(self.img_w_val.get())
+        if self.errors():
+            exit()
+
+        img_h = int(self.img_h.get())
+        img_w = int(self.img_w.get())
         tile_val = int(self.tile_size.get())
-        filename_out = "/" + self.filename_text.get() + ".jpg"
         dis_metric = self.hist_var.get()
-        mos = Mosaic(self.image_path, (img_h, img_w), tile_val,
+        filename = self.image_path[self.image_path.rfind("/") + 1:-4]
+        filename_out = filename + time.strftime("%Y%m%d-%H-%M-%S") + "-" + dis_metric + "-" + str(tile_val) + "-" + str(img_w) + "x" + str(img_h)
+
+        mos = Mosaic(self.image_path, (img_w, img_h), tile_val,
                      self.src_dir, dis_metric, filename_out)
         mos.create_mosaic()
 
@@ -71,6 +77,19 @@ class MainApplication(tk.Frame):
 
     def open_dir(self):
         self.src_dir = askdirectory()
+
+    def errors(self):
+        val = False
+        if self.img_w == "" or self.img_h == "":
+            print("Error in width or height parameters")
+            val = True
+        elif self.src_dir is None:
+            print("Select source directory")
+            val = True
+        elif self.image_path is None:
+            print("Select input Image")
+            val = True
+        return val
 
     def exit_btn(self):
         exit()
