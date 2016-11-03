@@ -77,7 +77,7 @@ class Mosaic:
                 self.org_img[i * tileSize:(i + 1) * tileSize,
                              j * tileSize:(j + 1) * tileSize] = tile
                 cv2.imshow("Creating Mosaic", self.org_img)
-				cv2.waitKey(1)
+                cv2.waitKey(1)
 
         #cv2.waitKey(0)
         cv2.destroyAllWindows()
