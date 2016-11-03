@@ -13,8 +13,7 @@ class Mosaic:
     def __init__(self, img_path, img_dim, tile_size, src_dir, dis_metric, out_name):
         self.img_name = img_path[img_path.rfind("/") + 1:]
         self.img_dim = img_dim
-        self.org_img = cv2.imread(img_path)
-        self.org_img = cv2.resize(self.org_img, (img_dim[0], img_dim[1]))
+        self.org_img = self.process_target_image(img_path, img_dim[0], img_dim[1])
         self.source_dir = src_dir
         self.tile_size = tile_size
         self.dis_metric = dis_metric
@@ -30,6 +29,12 @@ class Mosaic:
         cv2.normalize(hist, hist)
         hist = hist.flatten()
         return hist
+
+    def process_target_image(self, img_path, height, width):
+        image = cv2.imread(img_path)
+        image = cv2.resize(image, (height, width))
+        image = cv2.GaussianBlur(image, (11, 11), 0)
+        return image
 
     def read_src_images(self):
         for imagePath in glob.glob(self.source_dir + "/*.jpg"):
@@ -59,7 +64,7 @@ class Mosaic:
     def get_tile(self, img_name, tile_size):
         image = cv2.imread(self.source_dir + "/" + img_name)
         image = cv2.resize(image, (tile_size, tile_size))
-        image = cv2.GaussianBlur(image, (5, 5), 0)
+        image = cv2.GaussianBlur(image, (11, 11), 0)
         return image
 
     def create_mosaic(self):

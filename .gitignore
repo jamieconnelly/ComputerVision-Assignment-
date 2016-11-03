@@ -1,6 +1,5 @@
 .DS_Store
 Images/
-compare.pyc
-mosaic_target1.jpg
-mosaic_target2.jpg
+mosaic.pyc
+*.jpg
 Undergrad_Assignment2016.pdf
