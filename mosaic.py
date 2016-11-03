@@ -14,11 +14,12 @@ class Mosaic:
         self.img_name = img_path[img_path.rfind("/") + 1:]
         self.img_dim = img_dim
         self.org_img = cv2.imread(img_path)
-        self.org_img = cv2.resize(self.org_img, (img_dim[0], img_dim[1]))
+        self.org_img = cv2.resize(self.org_img, (img_dim[1], img_dim[0]))
+        self.org_img = cv2.GaussianBlur(self.org_img, (5, 5), 0)
         self.source_dir = src_dir
         self.tile_size = tile_size
         self.dis_metric = dis_metric
-        self.out_name = out_name
+        self.out_name = os.getcwd() +"/" + out_name + ".jpg"
         self.read_src_images()
         print 'output image dimensions are: ' + str(self.org_img.shape)
 
@@ -76,8 +77,8 @@ class Mosaic:
                 self.org_img[i * tileSize:(i + 1) * tileSize,
                              j * tileSize:(j + 1) * tileSize] = tile
                 cv2.imshow("Creating Mosaic", self.org_img)
-                cv2.waitKey(1)
+				cv2.waitKey(1)
 
-        cv2.waitKey(0)
+        #cv2.waitKey(0)
         cv2.destroyAllWindows()
-        cv2.imwrite(os.getcwd() + self.out_name, self.org_img)
+        cv2.imwrite(self.out_name, self.org_img)
