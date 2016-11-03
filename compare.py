@@ -12,12 +12,12 @@ class Compare:
                       "Hellinger": cv2.HISTCMP_HELLINGER}
 
     def __init__(self, img_path, img_dim, num_of_tiles, src_dir):
-        self.img_name = img_path[img_path.rfind("/") + 1:]
+        self.img_name = img_path[img_path.rfind("/") + 1:] #take image name from string
         self.img_dim = img_dim
         self.org_img = cv2.imread(img_path)
         self.org_img = cv2.resize(self.org_img, (img_dim[0], img_dim[1]))
         self.source_dir = src_dir
-        self.tile_size = 5  # int(floor(sqrt(num_of_tiles)))
+        self.tile_size = 20 # int(floor(sqrt(num_of_tiles)))
         # self.validate_img_size(self.img_dim, self.tile_size, num_of_tiles)
         self.read_src_images()
         print self.org_img.shape
@@ -32,7 +32,7 @@ class Compare:
     def compute_histogram(self, image):
         # extract a 3D RGB color histogram from the image,
         # using 8 bins per channel, normalize
-        hist = cv2.calcHist([image], [0, 1, 2], None, [8, 8, 8],
+        hist = cv2.calcHist([image], [0, 1, 2], None, [64, 64, 64],
                             [0, 256, 0, 256, 0, 256])
         cv2.normalize(hist, hist)
         hist = hist.flatten()
@@ -64,7 +64,10 @@ class Compare:
         return results[0][1]
 
     def get_tile(self, path, tileSize):
-        image = cv2.imread(os.getcwd() + "/Images/training_mix/" + path)
+        string=self.source_dir +"/"+ path
+        #print(string)
+        #exit()
+        image = cv2.imread(string)
         image = cv2.resize(image, (tileSize, tileSize))
         # image = cv2.GaussianBlur(image, (5, 5), 0)
         return image
@@ -78,7 +81,7 @@ class Compare:
                 roi = self.org_img[i * tileSize:(i + 1) * tileSize,
                                    j * tileSize:(j + 1) * tileSize]
                 fts = self.compute_histogram(roi)
-                img = self.compare_histograms(fts, 'Hellinger')
+                img = self.compare_histograms(fts, 'Intersection')
                 tile = self.get_tile(img, tileSize)
                 self.org_img[i * tileSize:(i + 1) * tileSize,
                              j * tileSize:(j + 1) * tileSize] = tile
