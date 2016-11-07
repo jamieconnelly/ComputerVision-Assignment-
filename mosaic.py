@@ -41,7 +41,7 @@ class Mosaic:
             filename = imagePath[imagePath.rfind("/") + 1:]
             image = cv2.imread(imagePath)
             image = cv2.resize(image, (50, 50))
-            Mosaic.index[filename] = self.compute_histogram(image)
+            self.index[filename] = self.compute_histogram(image)
 
         print 'finished computing ' + str(len(Mosaic.index)) + ' histograms'
 
@@ -83,6 +83,6 @@ class Mosaic:
                 cv2.imshow("Creating Mosaic", self.org_img)
                 cv2.waitKey(1)
 
-        cv2.waitKey(0)
+        #cv2.waitKey(0)
         cv2.destroyAllWindows()
         cv2.imwrite(self.out_name, self.org_img)

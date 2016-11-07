@@ -23,7 +23,7 @@ class MainApplication(tk.Frame):
         # Declare labels and inputs
         self.size_picker_lbl = tk.Label(parent, text="Pick Tile Size")
         self.size_picker = tk.OptionMenu(parent, self.tile_size,
-                                         "5", "10", "20", "30")
+                                         "5", "10", "20", "40")
         self.img_w_lbl = tk.Label(parent, text="Image Width")
         self.img_w_val = tk.Entry(parent, bd=1, text=self.img_w)
         self.img_h_lbl = tk.Label(parent, text="Image Height")
@@ -46,7 +46,7 @@ class MainApplication(tk.Frame):
         self.exit_btn.pack(side=tk.BOTTOM, fill=tk.X)
         self.start_btn.pack(side=tk.BOTTOM, fill=tk.X)
         self.open_img_btn.pack(side=tk.BOTTOM, fill=tk.X)
-        self.source_dir.pack(side=tk.TOP, fill=tk.X)
+        #self.source_dir.pack(side=tk.TOP, fill=tk.X)
         self.source_dir.pack(side=tk.BOTTOM, fill=tk.X)
         self.img_w_lbl.pack()
         self.img_w_val.pack()
