@@ -19,6 +19,10 @@ class MainApplication(tk.Frame):
         self.img_h = tk.IntVar()
         self.img_w.set(800)
         self.img_h.set(600)
+        self.modes = [("Part A", "A"), ("Part C", "C")]
+
+        self.part_chooser = tk.StringVar()
+        self.part_chooser.set("A")
 
         # Declare labels and inputs
         self.size_picker_lbl = tk.Label(parent, text="Pick Tile Size")
@@ -54,6 +58,10 @@ class MainApplication(tk.Frame):
         self.img_h_val.pack()
         self.hist_comp_lbl.pack()
         self.hist_comp.pack()
+        for text, mode in self.modes:
+            b = tk.Radiobutton(parent, text=text,
+                            variable=self.part_chooser, value=mode)
+            b.pack(anchor=tk.W)
         self.size_picker_lbl.pack()
         self.size_picker.pack()
 
@@ -67,10 +75,18 @@ class MainApplication(tk.Frame):
         dis_metric = self.hist_var.get()
         filename = self.image_path[self.image_path.rfind("/") + 1:-4]
         filename_out = filename + time.strftime("%Y%m%d-%H-%M-%S") + "-" + dis_metric + "-" + str(tile_val) + "-" + str(img_w) + "x" + str(img_h)
-
         mos = Mosaic(self.image_path, (img_w, img_h), tile_val,
                      self.src_dir, dis_metric, filename_out)
-        mos.create_mosaic()
+        if self.part_chooser.get() == "A":
+            mos.read_src_images()
+            mos.create_mosaic()
+        elif self.part_chooser.get() == "C":
+            mos.compute_partB()
+            mos.update_src_images()
+            mos.read_src_images()
+            mos.create_mosaic()
+
+
 
     def open_img_btn_cb(self):
         self.image_path = askopenfilename()

@@ -1,6 +1,7 @@
 import glob
 import cv2
 import os
+from sklearn.neighbors import KNeighborsClassifier
 
 
 class Mosaic:
@@ -18,8 +19,10 @@ class Mosaic:
         self.tile_size = tile_size
         self.dis_metric = dis_metric
         self.out_name = os.getcwd() +"/" + out_name + ".jpg"
-        self.read_src_images()
         print 'output image dimensions are: ' + str(self.org_img.shape)
+        self.manmade_src_dir = "/home/frank/OpenCV/ComputerVision-Assignment-/ImagesAssignment/Images/manmade_training/out_manmade_1k/"
+        self.natural_src_dir = "/home/frank/OpenCV/ComputerVision-Assignment-/ImagesAssignment/Images/natural_training/out_natural_1k/"
+        self.prediction = None
 
     def compute_histogram(self, image):
         # extract a 3D RGB color histogram from the image,
@@ -86,3 +89,46 @@ class Mosaic:
         #cv2.waitKey(0)
         cv2.destroyAllWindows()
         cv2.imwrite(self.out_name, self.org_img)
+
+    def define_prediction(self, value):
+        if value[0] == 0:
+            self.prediction = 0
+            print(str(value), "Natural")
+        elif value[0] == 1:
+            self.prediction = 1
+            print(str(value), "ManMade")
+
+    def read_src_images_partB(self,src_dir, index):
+        for imagePath in glob.glob(src_dir + "*.jpg"):
+            image = cv2.imread(imagePath)
+            image = cv2.resize(image, (50, 50))
+            #gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            index.append(self.compute_histogram(image))
+
+    def update_src_images(self):
+        if self.prediction == 1:
+            self.source_dir = self.manmade_src_dir
+        elif self.prediction == 0:
+            self.source_dir = self.natural_src_dir
+
+    def compute_partB(self):
+        index = []
+        # image_hist = compute_histogram(image)
+        image = cv2.resize(self.org_img, (50, 50))
+        #arr = np.concatenate(image)
+        src_hist = self.compute_histogram(image)
+        knn = KNeighborsClassifier(n_neighbors=5)
+
+        self.read_src_images_partB(self.manmade_src_dir, index)
+        labelM = [1] * len(index) # Label manmade
+        length = len(index)
+        self.read_src_images_partB(self.natural_src_dir, index)
+        labelN = [0] * (len(index) - length) # Label natural
+
+        responses = labelM + labelN # concatenate labels
+        print 'feeding KNN to make an evaluation'
+        print type(index[0][0])
+        print type(src_hist)
+        knn.fit(index, responses)
+
+        self.define_prediction(knn.predict([src_hist])) #print value predicted
