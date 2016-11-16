@@ -1,14 +1,14 @@
-from __future__ import division
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn.metrics import classification_report
+from sklearn import svm
 import feature_extractor as fts
 import glob
 import cv2
 import os
 import sys
 
-manmade_src_dir = os.getcwd() + "/Images/manmade_training/out_manmade_1k/"
-natural_src_dir = os.getcwd() + "/Images/natural_training/out_natural_1k/"
-knn = KNeighborsClassifier(n_neighbors=31)
+knn = KNeighborsClassifier(n_neighbors=5)
+svm = svm.SVC()
 
 
 def read_images(src_dir, feature):
@@ -23,35 +23,49 @@ def read_images(src_dir, feature):
     return feature_list
 
 
-def create_training_set(feature):
-    # calculate training images features
-    manmade_imgs = read_images(manmade_src_dir, feature)
-    natural_imgs = read_images(natural_src_dir, feature)
+def calc_features_and_labels(manmade_dir, natural_dir, feature):
+    # calculate images features
+    manmade_imgs = read_images(manmade_dir, feature)
+    natural_imgs = read_images(natural_dir, feature)
     # Label images as manmade or natural
     manmade_lbl = [1] * len(manmade_imgs)
-    natural_lbl = [0] * len(manmade_imgs)
-    # concatenate labels and images
+    natural_lbl = [0] * len(natural_imgs)
+    # concatenate label and image lists
     responses = manmade_lbl + natural_lbl
     index = manmade_imgs + natural_imgs
+    return index, responses
+
+
+def create_training_set(feature):
+    manmade_dir = os.getcwd() + "/Images/manmade_training/out_manmade_1k/"
+    natural_dir = os.getcwd() + "/Images/natural_training/out_natural_1k/"
+    index, responses = calc_features_and_labels(manmade_dir, natural_dir, feature)
     knn.fit(index, responses)
+    svm.fit(index, responses)
 
 
-def predict(test_dir, feature):
-    test_imgs = read_images(test_dir, feature)
+def predict(feature):
+    manmade_test = os.getcwd() + "/Images/manmade_test/"
+    natural_test = os.getcwd() + "/Images/natural_test/"
+    index, responses = calc_features_and_labels(manmade_test, natural_test, feature)
 
-    results = []
-    for feat in test_imgs:
-        results.append(knn.predict([feat])[0])
-
-    correct = len(filter(lambda i: i == 1, results)) / len(test_imgs) * 100
-    err = 100 - correct
-    print 'correct: ', correct, '%, ', 'error: ', err, '%'
+    results_knn = []
+    results_svm = []
+    for feat in index:
+        results_knn.append(knn.predict([feat])[0])
+        results_svm.append(svm.predict([feat])[0])
+    
+    target_names = ['manmade', 'natural']
+    print 'KNN Classifier'
+    print classification_report(responses, results_knn, target_names=target_names)
+    print 'SVM Classifier'
+    print classification_report(responses, results_svm, target_names=target_names)
 
 
 def main(argv):
     features = ['histogram']
 
-    if len(argv) is not 2:
+    if len(argv) is not 1:
         print 'two arguments required, <feature> <test_directory>'
         sys.exit()
 
@@ -60,9 +74,8 @@ def main(argv):
         print 'please provide on of the following features: ' + str(features)
         sys.exit()
 
-    test_dir = os.getcwd() + '/' + sys.argv[2]
     create_training_set(feature)
-    predict(test_dir, feature)
+    predict(feature)
 
 
 if __name__ == '__main__':
