@@ -10,6 +10,7 @@ manmade_src_dir = os.getcwd() + "/Images/out_manmade_1k/"
 natural_src_dir = os.getcwd() + "/Images/out_natural_1k/"
 knn = KNeighborsClassifier(n_neighbors=31)
 
+
 def read_images(src_dir, feature):
     feature_list = []
     for imagePath in glob.glob(src_dir + "*.jpg"):
@@ -27,20 +28,20 @@ def create_training_set(feature):
     manmade_imgs = read_images(manmade_src_dir, feature)
     natural_imgs = read_images(natural_src_dir, feature)
     # Label images as manmade or natural
-    manmade_lbl = [1] * len(manmade_imgs) 
+    manmade_lbl = [1] * len(manmade_imgs)
     natural_lbl = [0] * len(manmade_imgs)
-     # concatenate labels and images
+    # concatenate labels and images
     responses = manmade_lbl + natural_lbl
     index = manmade_imgs + natural_imgs
     knn.fit(index, responses)
-    
+
 
 def predict(test_dir, feature):
     test_imgs = read_images(test_dir, feature)
-    
+
     results = []
-    for fts in test_imgs:
-        results.append(knn.predict([fts])[0])
+    for feat in test_imgs:
+        results.append(knn.predict([feat])[0])
 
     correct = len(filter(lambda i: i == 1, results)) / len(test_imgs) * 100
     err = 100 - correct
@@ -53,12 +54,12 @@ def main(argv):
     if len(argv) is not 2:
         print 'two arguments required, <feature> <test_directory>'
         sys.exit()
-    
+
     feature = sys.argv[1].lower()
     if feature not in features:
         print 'please provide on of the following features: ' + str(features)
         sys.exit()
-    
+
     test_dir = os.getcwd() + '/' + sys.argv[2]
     create_training_set(feature)
     predict(test_dir, feature)
