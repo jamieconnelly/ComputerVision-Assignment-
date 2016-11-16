@@ -1,5 +1,5 @@
 .DS_Store
 Images/
-mosaic.pyc
+*.pyc
 *.jpg
 Undergrad_Assignment2016.pdf
