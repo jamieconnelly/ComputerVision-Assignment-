@@ -6,8 +6,8 @@ import cv2
 import os
 import sys
 
-manmade_src_dir = os.getcwd() + "/Images/out_manmade_1k/"
-natural_src_dir = os.getcwd() + "/Images/out_natural_1k/"
+manmade_src_dir = os.getcwd() + "/Images/manmade_training/out_manmade_1k/"
+natural_src_dir = os.getcwd() + "/Images/natural_training/out_natural_1k/"
 knn = KNeighborsClassifier(n_neighbors=31)
 
 
