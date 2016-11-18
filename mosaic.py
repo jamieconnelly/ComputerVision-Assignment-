@@ -2,6 +2,7 @@ import glob
 import cv2
 import os
 from sklearn.neighbors import KNeighborsClassifier
+from sklearn import svm
 
 
 class Mosaic:
@@ -117,7 +118,8 @@ class Mosaic:
         image = cv2.resize(self.org_img, (50, 50))
         # arr = np.concatenate(image)
         src_hist = self.compute_histogram(image)
-        knn = KNeighborsClassifier(n_neighbors=5)
+        #knn = KNeighborsClassifier(n_neighbors=5)
+        model = svm.SVC()
 
         self.read_src_images_partB(self.manmade_src_dir, index)
         labelM = [1] * len(index)  # Label manmade
@@ -129,6 +131,8 @@ class Mosaic:
         print 'feeding KNN to make an evaluation'
         print type(index[0][0])
         print type(src_hist)
-        knn.fit(index, responses)
+        #knn.fit(index, responses)
+        model.fit(index, responses)
+        self.define_prediction(model.predict([src_hist]))
+        #self.define_prediction(knn.predict([src_hist])) #print value predicted
 
-        self.define_prediction(knn.predict([src_hist]))  # print value predicted

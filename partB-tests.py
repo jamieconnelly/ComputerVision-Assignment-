@@ -91,13 +91,13 @@ def main():
     #out=np.array([])
     for i in indexN:
         tup=compute_surf_keypoints(i)
-        data =bowDE.compute(i,tup[0], tup[1])
+        data =bowDE.compute(i,tup[0], tup[1], 20)
         traindata.append(tup[1].flatten())
         label.append(1)
     for i in indexM:
         tup=compute_surf_keypoints(i)
-        data = bowDE.compute(i, tup[0],tup[1])
-        traindata.append(tup[1].flatten())
+        data = bowDE.compute(i, tup[0],tup[1], 20)
+        traindata.append(tup[1])
         label.append(0)
 
     model = svm.SVC()
