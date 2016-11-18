@@ -13,6 +13,7 @@ svm = svm.LinearSVC()
 
 def read_images(src_dir, feature):
     feature_list = []
+
     for imagePath in glob.glob(src_dir + "*.jpg"):
         image = cv2.imread(imagePath)
 
@@ -50,29 +51,33 @@ def calc_features_and_labels(manmade_dir, natural_dir, feature):
 
 
 def create_training_set(feature):
-    manmade_dir = os.getcwd() + "/Images/manmade_training/out_manmade_1k/"
-    natural_dir = os.getcwd() + "/Images/natural_training/out_natural_1k/"
-    index, responses = calc_features_and_labels(manmade_dir, natural_dir, feature)
+    manmade_dir = os.getcwd() + "/training_images/training/out_manmade_1k/"
+    natural_dir = os.getcwd() + "/training_images/training/out_manmade_1k/"
+    index, responses = calc_features_and_labels(manmade_dir, natural_dir,
+                                                feature)
     knn.fit(index, responses)
     svm.fit(index, responses)
 
 
 def predict(feature):
-    manmade_test = os.getcwd() + "/Images/manmade_test/"
-    natural_test = os.getcwd() + "/Images/natural_test/"
-    index, responses = calc_features_and_labels(manmade_test, natural_test, feature)
+    manmade_test = os.getcwd() + "/training_images/test/out_manmade_1k/"
+    natural_test = os.getcwd() + "/training_images/test/out_natural_1k/"
+    index, responses = calc_features_and_labels(manmade_test,
+                                                natural_test, feature)
 
     results_knn = []
     results_svm = []
     for feat in index:
         results_knn.append(knn.predict([feat])[0])
         results_svm.append(svm.predict([feat])[0])
-    
+
     target_names = ['manmade', 'natural']
     print 'KNN Classifier'
-    print classification_report(responses, results_knn, target_names=target_names)
+    print classification_report(responses, results_knn,
+                                target_names=target_names)
     print 'SVM Classifier'
-    print classification_report(responses, results_svm, target_names=target_names)
+    print classification_report(responses, results_svm,
+                                target_names=target_names)
 
 
 def main(argv):
