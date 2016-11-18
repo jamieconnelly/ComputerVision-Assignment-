@@ -21,8 +21,8 @@ class Mosaic:
         self.dis_metric = dis_metric
         self.out_name = os.getcwd() +"/" + out_name + ".jpg"
         print 'output image dimensions are: ' + str(self.org_img.shape)
-        self.manmade_src_dir = "/home/frank/OpenCV/ComputerVision-Assignment-/ImagesAssignment/Images/manmade_training/out_manmade_1k/"
-        self.natural_src_dir = "/home/frank/OpenCV/ComputerVision-Assignment-/ImagesAssignment/Images/natural_training/out_natural_1k/"
+        self.manmade_src_dir = os.getcwd() + "/Images/manmade_training/out_manmade_1k/"
+        self.natural_src_dir = os.getcwd() + "/Images/natural_training/out_natural_1k/"
         self.prediction = None
 
     def compute_histogram(self, image):
