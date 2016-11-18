@@ -76,10 +76,10 @@ class MainApplication(tk.Frame):
         filename_out = filename + time.strftime("%Y%m%d-%H-%M-%S") + \
                        "-" + dis_metric + "-" + str(tile_val) + "-" + \
                        str(img_w) + "x" + str(img_h)
-        
+
         mos = Mosaic(self.image_path, (img_w, img_h), tile_val,
                      dis_metric, filename_out)
-        
+
         if self.part_chooser.get() == "A":
             if self.src_dir is None:
                 print("Select source directory")

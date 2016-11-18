@@ -115,8 +115,8 @@ class Mosaic:
         return index, responses
 
     def classify_img(self):
-        manmade_dir = os.getcwd() + "/Images/manmade_training/out_manmade_1k/"
-        natural_dir = os.getcwd() + "/Images/natural_training/out_natural_1k/"
+        manmade_dir = os.getcwd() + "/training_images/training/out_manmade_1k/"
+        natural_dir = os.getcwd() + "/training_images/training/out_manmade_1k/"
         clsf = svm.LinearSVC()
         index, resp = self.calc_features_and_labels(manmade_dir, natural_dir)
         clsf.fit(index, resp)
