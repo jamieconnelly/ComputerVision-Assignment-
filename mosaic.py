@@ -87,7 +87,7 @@ class Mosaic:
                 cv2.imshow("Creating Mosaic", self.org_img)
                 cv2.waitKey(1)
 
-        #cv2.waitKey(0)
+        # cv2.waitKey(0)
         cv2.destroyAllWindows()
         cv2.imwrite(self.out_name, self.org_img)
 
@@ -99,11 +99,11 @@ class Mosaic:
             self.prediction = 1
             print(str(value), "ManMade")
 
-    def read_src_images_partB(self,src_dir, index):
+    def read_src_images_partB(self, src_dir, index):
         for imagePath in glob.glob(src_dir + "*.jpg"):
             image = cv2.imread(imagePath)
             image = cv2.resize(image, (50, 50))
-            #gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
+            # gray_image = cv2.cvtColor(image, cv2.COLOR_BGR2GRAY)
             index.append(self.compute_histogram(image))
 
     def update_src_images(self):
@@ -116,18 +116,18 @@ class Mosaic:
         index = []
         # image_hist = compute_histogram(image)
         image = cv2.resize(self.org_img, (50, 50))
-        #arr = np.concatenate(image)
+        # arr = np.concatenate(image)
         src_hist = self.compute_histogram(image)
         #knn = KNeighborsClassifier(n_neighbors=5)
         model = svm.SVC()
 
         self.read_src_images_partB(self.manmade_src_dir, index)
-        labelM = [1] * len(index) # Label manmade
+        labelM = [1] * len(index)  # Label manmade
         length = len(index)
         self.read_src_images_partB(self.natural_src_dir, index)
-        labelN = [0] * (len(index) - length) # Label natural
+        labelN = [0] * (len(index) - length)  # Label natural
 
-        responses = labelM + labelN # concatenate labels
+        responses = labelM + labelN  # concatenate labels
         print 'feeding KNN to make an evaluation'
         print type(index[0][0])
         print type(src_hist)
@@ -135,3 +135,4 @@ class Mosaic:
         model.fit(index, responses)
         self.define_prediction(model.predict([src_hist]))
         #self.define_prediction(knn.predict([src_hist])) #print value predicted
+

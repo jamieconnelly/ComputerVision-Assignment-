@@ -86,8 +86,6 @@ class MainApplication(tk.Frame):
             mos.read_src_images()
             mos.create_mosaic()
 
-
-
     def open_img_btn_cb(self):
         self.image_path = askopenfilename()
 
