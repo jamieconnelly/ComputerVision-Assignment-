@@ -7,19 +7,32 @@ import cv2
 import os
 import sys
 
-knn = KNeighborsClassifier(n_neighbors=5)
-svm = svm.SVC()
+knn = KNeighborsClassifier(n_neighbors=9)
+svm = svm.LinearSVC()
 
 
 def read_images(src_dir, feature):
     feature_list = []
     for imagePath in glob.glob(src_dir + "*.jpg"):
         image = cv2.imread(imagePath)
-        image = cv2.resize(image, (50, 50))
-        image = cv2.GaussianBlur(image, (11, 11), 0)
+
         if feature == 'histogram':
+            image = cv2.resize(image, (50, 50))
+            image = cv2.GaussianBlur(image, (11, 11), 0)
             hist = fts.compute_histogram(image)
             feature_list.append(hist)
+        elif feature == 'canny':
+            image = cv2.resize(image, (50, 50))
+            edges = fts.compute_canny(image)
+            feature_list.append(edges)
+        elif feature == 'hog':
+            hog = fts.compute_hog(image)
+            feature_list.append(hog)
+        elif feature == 'hough':
+            image = cv2.resize(image, (50, 50))
+            hough = fts.compute_hough(image)
+            feature_list.append(hough)
+
     return feature_list
 
 
@@ -63,15 +76,15 @@ def predict(feature):
 
 
 def main(argv):
-    features = ['histogram']
+    features = ['histogram', 'canny', 'hog', 'hough']
 
     if len(argv) is not 1:
-        print 'two arguments required, <feature> <test_directory>'
+        print 'argument, <feature>'
         sys.exit()
 
     feature = sys.argv[1].lower()
     if feature not in features:
-        print 'please provide on of the following features: ' + str(features)
+        print 'please provide one of the following features: ' + str(features)
         sys.exit()
 
     create_training_set(feature)
