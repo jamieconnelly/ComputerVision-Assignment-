@@ -50,7 +50,6 @@ class MainApplication(tk.Frame):
         self.exit_btn.pack(side=tk.BOTTOM, fill=tk.X)
         self.start_btn.pack(side=tk.BOTTOM, fill=tk.X)
         self.open_img_btn.pack(side=tk.BOTTOM, fill=tk.X)
-        #self.source_dir.pack(side=tk.TOP, fill=tk.X)
         self.source_dir.pack(side=tk.BOTTOM, fill=tk.X)
         self.img_w_lbl.pack()
         self.img_w_val.pack()
@@ -60,7 +59,7 @@ class MainApplication(tk.Frame):
         self.hist_comp.pack()
         for text, mode in self.modes:
             b = tk.Radiobutton(parent, text=text,
-                            variable=self.part_chooser, value=mode)
+                               variable=self.part_chooser, value=mode)
             b.pack(anchor=tk.W)
         self.size_picker_lbl.pack()
         self.size_picker.pack()
@@ -74,17 +73,23 @@ class MainApplication(tk.Frame):
         tile_val = int(self.tile_size.get())
         dis_metric = self.hist_var.get()
         filename = self.image_path[self.image_path.rfind("/") + 1:-4]
-        filename_out = filename + time.strftime("%Y%m%d-%H-%M-%S") + "-" + dis_metric + "-" + str(tile_val) + "-" + str(img_w) + "x" + str(img_h)
+        filename_out = filename + time.strftime("%Y%m%d-%H-%M-%S") + \
+                       "-" + dis_metric + "-" + str(tile_val) + "-" + \
+                       str(img_w) + "x" + str(img_h)
+        
         mos = Mosaic(self.image_path, (img_w, img_h), tile_val,
-                     self.src_dir, dis_metric, filename_out)
+                     dis_metric, filename_out)
+        
         if self.part_chooser.get() == "A":
-            mos.read_src_images()
-            mos.create_mosaic()
+            if self.src_dir is None:
+                print("Select source directory")
+                exit()
+            mos.read_src_images(self.src_dir)
+            mos.create_mosaic(self.src_dir)
         elif self.part_chooser.get() == "C":
-            mos.compute_partB()
-            mos.update_src_images()
-            mos.read_src_images()
-            mos.create_mosaic()
+            dir = mos.classify_img()
+            mos.read_src_images(dir)
+            mos.create_mosaic(dir)
 
     def open_img_btn_cb(self):
         self.image_path = askopenfilename()
@@ -96,9 +101,6 @@ class MainApplication(tk.Frame):
         val = False
         if self.img_w == "" or self.img_h == "":
             print("Error in width or height parameters")
-            val = True
-        elif self.src_dir is None:
-            print("Select source directory")
             val = True
         elif self.image_path is None:
             print("Select input Image")

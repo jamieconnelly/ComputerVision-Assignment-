@@ -1,4 +1,5 @@
 .DS_Store
-*.pyc
 *.jpg
+!Images/*
+*.pyc
 Undergrad_Assignment2016.pdf
